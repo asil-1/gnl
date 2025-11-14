@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:36:48 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/14 17:51:30 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/14 18:12:07 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,28 @@ size_t	ft_strlen(char *s)
 	return (i);
 }
 
-char	*ft_strncpy(char *src, size_t n) //changer ca en strNdup
+char	*ft_strndup(char *s, size_t n)
 {
-	char	*dst;
 	size_t	i;
+	char	*result;
 
+	if (n > ft_strlen(s))
+		return (NULL);
+	result = malloc(sizeof(char) * (n + 1));
+	if (!result)
+		return (NULL);
 	i = 0;
-	while (src[i] && i < n)
+	while (s && i < n)
 	{
-		dst[i] = src[i];
+		result[i] = s[i];
 		i++;
 	}
 	while (i < n)
 	{
-		dst[i] = '\0';
+		result[i] = '\0';
 		i++;
 	}
-	return (dst);
+	return (result);
 }
 
 // va falloir proteger avant
@@ -66,7 +71,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	// while (s1[++i] && i < size)
 	// 	result[i] = s1[i];
 	// result[i] = '\0';
-	result = ft_strncpy(s1, ft_strlen(s1));
+	result = ft_strndup(s1, ft_strlen(s1));
 	i = -1;
 	j = ft_strlen(result);
 	while (s2[++i] && (i + j) < size)
@@ -75,7 +80,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (result);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	size_t	i;
 	size_t	check;

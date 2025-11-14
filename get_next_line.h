@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:38:04 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/14 17:43:54 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/14 18:13:45 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 char	*get_next_line(int fd);
 void	*ft_calloc(size_t size, size_t repeat);
 char	*ft_strchr(char *s, int c);
-char	*ft_strncpy(char *src, size_t n);
 char	*ft_strjoin(char *s1, char *s2);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strndup(char *s, size_t n);
+char	*ft_substr(char *s, unsigned int start, size_t len);
 size_t	ft_strlen(char *s);
 
 #endif

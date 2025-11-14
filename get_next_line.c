@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/14 17:42:21 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/14 18:09:02 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char	*get_next_line(int fd)
 	n = 0;
 	while (line[n] != '\n')
 		n++;
-	result = ft_strncpy(line, n + 1);
+	result = ft_strndup(line, n + 1);
 	len = ft_strlen(line) - (n + 2);
 	next_line = ft_substr(line, n + 2, len);
 	return (line);
