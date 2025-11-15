@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:36:48 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/14 18:12:07 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/15 14:32:25 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,14 @@ char	*ft_strjoin(char *s1, char *s2)
 	result = malloc(sizeof(char) * size);
 	if (!result)
 		return (NULL);
-	// i = -1;
-	// while (s1[++i] && i < size)
-	// 	result[i] = s1[i];
-	// result[i] = '\0';
-	result = ft_strndup(s1, ft_strlen(s1));
+	i = 0;
+	while (s1[i])
+	{
+		result[i] = s1[i];
+		i++;
+	}
 	i = -1;
-	j = ft_strlen(result);
+	j = ft_strlen(s1);
 	while (s2[++i] && (i + j) < size)
 		result[j + i] = s2[i];
 	result[j + i] = '\0';
@@ -86,8 +87,6 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	size_t	check;
 	char	*result;
 
-	if (s == NULL)
-		return (NULL);
 	check = ft_strlen(s);
 	if (check - start > 0 && check - start < len)
 		len = check - start;
@@ -97,7 +96,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	if (result == NULL)
 		return (NULL);
 	i = 0;
-	while (result)
+	while (i < len)
 	{
 		result[i] = s[start];
 		start++;

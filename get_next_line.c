@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/14 18:09:02 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/15 14:35:29 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,20 @@ void	*ft_calloc(size_t size, size_t repeat)
 	return (result);
 }
 
-char	*read_line(int fd, char *buffer)
+char	*read_line(int fd, char *line_read, char *buffer)
 {
-	char	*line_read;
 	char	*result;
 	ssize_t	bytes_read;
 
-	bytes_read = 0;
-	line_read = ft_calloc(BUFFER_SIZE + 2, 1);
-	if (!line_read)
-		return (NULL);
+	(void)buffer;
+	bytes_read = 1;
+	result = ft_calloc(BUFFER_SIZE + 2, sizeof(char));
 	while (bytes_read > 0 && !ft_strchr(line_read, '\n'))
 	{
 		bytes_read = read(fd, line_read, BUFFER_SIZE);
 		if (bytes_read < 0)
 			free(line_read);
-		result = ft_strjoin(buffer, line_read);
+		result = ft_strjoin(result, line_read);
 		if(!result)
 		{
 			free (line_read);
@@ -57,22 +55,25 @@ char	*read_line(int fd, char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*next_line;
-	char		*line;
+	static char	*next_line = {0};
 	char		*result;
-	size_t		n;
+	char		*line;
 	size_t		len;
+	size_t		n;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = read_line(fd, next_line);
+	line = ft_calloc(BUFFER_SIZE + 2, sizeof(char));
+	if (!line)
+		return (NULL);
+	line = read_line(fd, line, next_line);
 	n = 0;
-	while (line[n] != '\n')
+	while (line[n] != '\n' && line[n])
 		n++;
 	result = ft_strndup(line, n + 1);
-	len = ft_strlen(line) - (n + 2);
-	next_line = ft_substr(line, n + 2, len);
-	return (line);
+	len = ft_strlen(line) - (n + 1);
+	next_line = ft_substr(line, n + 1, len);
+	return (result);
 }
 
 
