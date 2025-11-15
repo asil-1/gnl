@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:38:04 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/14 18:13:45 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/15 19:02:36 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdlib.h> //malloc
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 27
 # endif
 
 char	*get_next_line(int fd);

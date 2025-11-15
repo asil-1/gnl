@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:36:48 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/15 14:32:25 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/15 18:18:23 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*ft_strndup(char *s, size_t n)
 		result[i] = s[i];
 		i++;
 	}
-	while (i < n)
+	while (i <= n)
 	{
 		result[i] = '\0';
 		i++;
@@ -55,7 +55,6 @@ char	*ft_strndup(char *s, size_t n)
 	return (result);
 }
 
-// va falloir proteger avant
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*result;
@@ -78,6 +77,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[++i] && (i + j) < size)
 		result[j + i] = s2[i];
 	result[j + i] = '\0';
+	free(s1);
 	return (result);
 }
 
