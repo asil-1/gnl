@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/15 18:59:10 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/16 10:27:03 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,16 @@ void	*ft_calloc(size_t size, size_t nb)
 
 size_t	count_to_nl(char *line)
 {
-	size_t	n;
+	size_t	i;
 
-	n = 0;
-	while (line[n] && line[n] != '\n')
-		n++;
-	n += 1;
-	return (n);
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '\n')
+			return (i + 1);
+		i++;
+	}
+	return (i);
 }
 
 char	*get_read_line(int fd, char *s_line)
@@ -48,7 +51,6 @@ char	*get_read_line(int fd, char *s_line)
 	char	*result;
 	ssize_t	bytes_read;
 
-	bytes_read = 1;
 	if (s_line)
 		result = s_line;
 	else if (!s_line)
@@ -58,14 +60,17 @@ char	*get_read_line(int fd, char *s_line)
 			return (NULL);
 	}
 	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	bytes_read = 1;
 	while (bytes_read > 0 && !ft_strchr(buf, '\n'))
 	{
+		//attention bzero
 		bzero(buf, BUFFER_SIZE);
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read < 0)
 		{
 			free(buf);
-			free(result);
+			if (!s_line)
+				free(result);
 			return (NULL);
 		}
 		result = ft_strjoin(result, buf);
@@ -92,12 +97,22 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = get_read_line(fd, s_line);
 	if (!line)
+	{
+		if (s_line)
+			free(s_line);
+		s_line = NULL;
 		return (NULL);
+	}
 	count_n = count_to_nl(line);
 	result = ft_strndup(line, count_n);
+	if (count_n == 0)
+	{
+		free(result);
+		result = NULL;
+	}
 	len = ft_strlen(line) - (count_n);
 	s_line = ft_substr(line, count_n, len);
-	if (result == NULL)
+	if (len == 0)
 	{
 		free(s_line);
 		s_line = NULL;
