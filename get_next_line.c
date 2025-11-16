@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/16 10:27:03 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/16 11:55:04 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,71 +31,69 @@ void	*ft_calloc(size_t size, size_t nb)
 	return (result);
 }
 
-size_t	count_to_nl(char *line)
+char	*ft_get_read_line(int fd, char *buf, char *next_line)
 {
-	size_t	i;
-
-	i = 0;
-	while (line[i])
-	{
-		if (line[i] == '\n')
-			return (i + 1);
-		i++;
-	}
-	return (i);
-}
-
-char	*get_read_line(int fd, char *s_line)
-{
-	char	*buf;
-	char	*result;
 	ssize_t	bytes_read;
 
-	if (s_line)
-		result = s_line;
-	else if (!s_line)
-	{
-		result = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-		if (!result)
-			return (NULL);
-	}
-	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	bytes_read = 1;
 	while (bytes_read > 0 && !ft_strchr(buf, '\n'))
 	{
-		//attention bzero
-		bzero(buf, BUFFER_SIZE);
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read < 0)
-		{
-			free(buf);
-			if (!s_line)
-				free(result);
 			return (NULL);
-		}
-		result = ft_strjoin(result, buf);
-		if(!result)
-		{
-			free (buf);
-			free (result);
+		buf[bytes_read] = '\0';
+		next_line = ft_strjoin(next_line, buf);
+		if(!next_line)
 			return (NULL);
-		}
 	}
-	free(buf);
+	return (next_line);
+}
+
+char	*ft_get_line(int fd, char *s_line)
+{
+	char	*buf;
+	char	*next_line;
+	char	*result;
+
+	if (s_line)
+		next_line = s_line;
+	else
+	{
+		next_line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (!next_line)
+			return (NULL);
+	}
+	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!buf)
+		return (NULL);
+	result = ft_get_read_line(fd, buf, next_line);
+	if (!result)
+	{
+		free(buf);
+		if (!s_line)
+			free(next_line);
+	}
+	else
+		free(buf);
 	return (result);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*s_line = {0};
+	static char	*s_line;
 	char		*result;
 	char		*line;
-	size_t		count_n;
 	size_t		len;
+	size_t		i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = get_read_line(fd, s_line);
+	if (s_line)
+	{
+		i = ft_strlen(s_line);
+		s_line[i] = '\0';
+	}
+	line = ft_get_line(fd, s_line);
 	if (!line)
 	{
 		if (s_line)
@@ -103,15 +101,24 @@ char	*get_next_line(int fd)
 		s_line = NULL;
 		return (NULL);
 	}
-	count_n = count_to_nl(line);
-	result = ft_strndup(line, count_n);
-	if (count_n == 0)
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '\n')
+		{
+			i++;
+			break ;
+		}
+		i++;
+	}
+	result = ft_strndup(line, i);
+	if (i == 0)
 	{
 		free(result);
 		result = NULL;
 	}
-	len = ft_strlen(line) - (count_n);
-	s_line = ft_substr(line, count_n, len);
+	len = ft_strlen(line) - (i);
+	s_line = ft_substr(line, i, len);
 	if (len == 0)
 	{
 		free(s_line);

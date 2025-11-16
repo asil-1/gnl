@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:38:04 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/16 09:12:57 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/16 11:54:47 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # endif
 
 char	*get_next_line(int fd);
+char	*ft_get_line(int fd, char *s_line);
+char	*ft_get_read_line(int fd, char *buf, char *next_line);
 void	*ft_calloc(size_t size, size_t repeat);
 char	*ft_strchr(char *s, int c);
 char	*ft_strjoin(char *s1, char *s2);
