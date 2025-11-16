@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/16 11:55:04 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/16 12:26:15 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	*ft_calloc(size_t size, size_t nb)
 		return (NULL);
 	i = 0;
 	while (i < (size * nb))
-		((unsigned char*)result)[i++] = 0;
+		((unsigned char *)result)[i++] = 0;
 	return (result);
 }
 
@@ -43,7 +43,7 @@ char	*ft_get_read_line(int fd, char *buf, char *next_line)
 			return (NULL);
 		buf[bytes_read] = '\0';
 		next_line = ft_strjoin(next_line, buf);
-		if(!next_line)
+		if (!next_line)
 			return (NULL);
 	}
 	return (next_line);
@@ -78,12 +78,38 @@ char	*ft_get_line(int fd, char *s_line)
 	return (result);
 }
 
+char	*line_formatting(char *line, char **s_line)
+{
+	char	*result;
+	size_t	len;
+	size_t	i;
+
+	i = 0;
+	while (line[i] && line[i] != '\n')
+		i++;
+	if (line[i] == '\n')
+		i++;
+	result = ft_strndup(line, i);
+	if (i == 0)
+	{
+		free(result);
+		result = NULL;
+	}
+	len = ft_strlen(line) - (i);
+	*s_line = ft_substr(line, i, len);
+	if (len == 0)
+	{
+		free(*s_line);
+		*s_line = NULL;
+	}
+	return (result);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*s_line;
 	char		*result;
 	char		*line;
-	size_t		len;
 	size_t		i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
@@ -101,29 +127,7 @@ char	*get_next_line(int fd)
 		s_line = NULL;
 		return (NULL);
 	}
-	i = 0;
-	while (line[i])
-	{
-		if (line[i] == '\n')
-		{
-			i++;
-			break ;
-		}
-		i++;
-	}
-	result = ft_strndup(line, i);
-	if (i == 0)
-	{
-		free(result);
-		result = NULL;
-	}
-	len = ft_strlen(line) - (i);
-	s_line = ft_substr(line, i, len);
-	if (len == 0)
-	{
-		free(s_line);
-		s_line = NULL;
-	}
+	result = line_formatting(line, &s_line);
 	free(line);
 	return (result);
 }
