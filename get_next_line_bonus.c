@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/17 14:20:36 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/17 14:07:19 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	*ft_calloc(size_t size, size_t nb)
 {
@@ -104,21 +104,21 @@ char	*line_formatting(char *line, char **s_line)
 
 char	*get_next_line(int fd)
 {
-	static char	*s_line = {0};
+	static char	*s_line[1024] = {0};
 	char		*result;
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = ft_get_line(fd, s_line);
+	line = ft_get_line(fd, s_line[fd]);
 	if (!line)
 	{
-		if (s_line)
-			free(s_line);
-		s_line = NULL;
+		if (s_line[fd])
+			free(s_line[fd]);
+		s_line[fd] = NULL;
 		return (NULL);
 	}
-	result = line_formatting(line, &s_line);
+	result = line_formatting(line, &s_line[fd]);
 	free(line);
 	return (result);
 }
