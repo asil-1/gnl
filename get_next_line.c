@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/17 14:20:36 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/17 18:45:39 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	*ft_calloc(size_t size, size_t nb)
 char	*ft_get_read_line(int fd, char *buf, char *next_line)
 {
 	ssize_t	bytes_read;
+	int		need_to_free = 0;
 
 	bytes_read = 1;
 	while (bytes_read > 0 && !ft_strchr(buf, '\n'))
@@ -41,9 +42,15 @@ char	*ft_get_read_line(int fd, char *buf, char *next_line)
 		if (bytes_read < 0)
 			return (NULL);
 		buf[bytes_read] = '\0';
-		next_line = ft_strjoin_and_free(next_line, buf);
-		if (!next_line)
+		char *tmp = ft_strjoin_and_free(next_line, buf);
+		if (!tmp)
+		{
+			if (need_to_free)
+				free(next_line);
 			return (NULL);
+		}
+		next_line = tmp;
+		need_to_free = 1;
 	}
 	return (next_line);
 }
@@ -56,6 +63,7 @@ char	*ft_get_line(int fd, char *s_line)
 
 	if (s_line)
 		next_line = s_line;
+		// next_line = ft_strndup(s_line, ft_strlen(s_line));
 	else
 	{
 		next_line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
@@ -87,18 +95,18 @@ char	*line_formatting(char *line, char **s_line)
 	if (line[i] == '\n')
 		i++;
 	result = ft_strndup(line, i);
+	if (!result)
+		return (NULL);
 	if (i == 0)
 	{
 		free(result);
 		result = NULL;
 	}
 	len = ft_strlen(line) - (i);
-	*s_line = ft_substr(line, i, len);
-	if (len == 0)
-	{
-		free(*s_line);
+	if (len != 0)
+		*s_line = ft_substr(line, i, len);
+	else
 		*s_line = NULL;
-	}
 	return (result);
 }
 
@@ -113,8 +121,7 @@ char	*get_next_line(int fd)
 	line = ft_get_line(fd, s_line);
 	if (!line)
 	{
-		if (s_line)
-			free(s_line);
+		free(s_line);
 		s_line = NULL;
 		return (NULL);
 	}
