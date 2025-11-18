@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:36:48 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/17 17:42:38 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:11:35 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,10 @@ char	*ft_strjoin_and_free(char *s1, char *s2)
 	size = ft_strlen(s1) + ft_strlen(s2) + 1;
 	result = malloc(sizeof(char) * size);
 	if (!result)
+	{
+		free(s1);
 		return (NULL);
+	}
 	i = 0;
 	while (s1[i])
 	{

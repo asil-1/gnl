@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/17 18:45:39 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/18 18:31:09 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,102 +30,94 @@ void	*ft_calloc(size_t size, size_t nb)
 	return (result);
 }
 
-char	*ft_get_read_line(int fd, char *buf, char *next_line)
+void	ft_get_read_line(int fd, char *buf, char **s_line)
 {
 	ssize_t	bytes_read;
-	int		need_to_free = 0;
 
-	bytes_read = 1;
+	bytes_read = read(fd, buf, BUFFER_SIZE);
 	while (bytes_read > 0 && !ft_strchr(buf, '\n'))
 	{
-		bytes_read = read(fd, buf, BUFFER_SIZE);
-		if (bytes_read < 0)
-			return (NULL);
 		buf[bytes_read] = '\0';
-		char *tmp = ft_strjoin_and_free(next_line, buf);
-		if (!tmp)
-		{
-			if (need_to_free)
-				free(next_line);
-			return (NULL);
-		}
-		next_line = tmp;
-		need_to_free = 1;
+		*s_line = ft_strjoin_and_free(*s_line, buf);
+		if (!*s_line)
+			return ;
+		bytes_read = read(fd, buf, BUFFER_SIZE);
 	}
-	return (next_line);
+	if (bytes_read < 0)
+	{
+		free(*s_line);
+		*s_line = NULL;
+		return ;
+	}
+	buf[bytes_read] = '\0';
+	if (ft_strchr(buf, '\n'))
+		*s_line = ft_strjoin_and_free(*s_line, buf);
 }
 
-char	*ft_get_line(int fd, char *s_line)
+void	ft_get_line(int fd, char **s_line)
 {
 	char	*buf;
-	char	*next_line;
-	char	*result;
 
-	if (s_line)
-		next_line = s_line;
-		// next_line = ft_strndup(s_line, ft_strlen(s_line));
-	else
+	if (!*s_line)
 	{
-		next_line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-		if (!next_line)
-			return (NULL);
+		*s_line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (!*s_line)
+			return ;
 	}
 	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buf)
 	{
-		free(next_line);
-		return (NULL);
+		free(*s_line);
+		*s_line = NULL;
+		return ;
 	}
-	result = ft_get_read_line(fd, buf, next_line);
-	if (!result && !s_line)
-		free(next_line);
+	ft_get_read_line(fd, buf, s_line);
 	free(buf);
-	return (result);
 }
 
-char	*line_formatting(char *line, char **s_line)
+char	*line_formatting(char **s_line, size_t i)
 {
 	char	*result;
+	char	*tmp;
 	size_t	len;
-	size_t	i;
 
-	i = 0;
-	while (line[i] && line[i] != '\n')
-		i++;
-	if (line[i] == '\n')
-		i++;
-	result = ft_strndup(line, i);
-	if (!result)
-		return (NULL);
-	if (i == 0)
+	result = NULL;
+	if (i > 0)
+		result = ft_strndup(*s_line, i);
+	len = ft_strlen(*s_line) - i;
+	if (len == 0 || !result)
+	{
+		free(*s_line);
+		*s_line = NULL;
+		return (result);
+	}
+	tmp = *s_line;
+	*s_line = ft_substr(tmp, i, len);
+	free(tmp);
+	if (!*s_line)
 	{
 		free(result);
-		result = NULL;
+		return (NULL);
 	}
-	len = ft_strlen(line) - (i);
-	if (len != 0)
-		*s_line = ft_substr(line, i, len);
-	else
-		*s_line = NULL;
 	return (result);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*s_line = {0};
+	static char	*s_line = NULL;
 	char		*result;
-	char		*line;
+	size_t		i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = ft_get_line(fd, s_line);
-	if (!line)
-	{
-		free(s_line);
-		s_line = NULL;
+	ft_get_line(fd, &s_line);
+	if (!s_line)
 		return (NULL);
-	}
-	result = line_formatting(line, &s_line);
-	free(line);
+	i = 0;
+	while (s_line[i] && s_line[i] != '\n')
+		i++;
+	if (s_line[i] == '\n')
+		i++;
+	result = line_formatting(&s_line, i);
 	return (result);
 }

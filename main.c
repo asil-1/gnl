@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 18:28:47 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/17 18:28:38 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:20:47 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(void)
 	char	*next_line;
 	int		fd;
 
-	fd = open("1char.txt", O_RDONLY);
+	fd = open("le corbeau et le renard", O_RDONLY);
 	while (1)
 	{
 		next_line = get_next_line(fd);
