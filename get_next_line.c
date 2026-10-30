@@ -6,13 +6,13 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:35:24 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/18 18:31:09 by ldepenne         ###   ########.fr       */
+/*   Updated: 2026/03/11 12:08:05 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	*ft_calloc(size_t size, size_t nb)
+static void	*ft_calloc(size_t size, size_t nb)
 {
 	void	*result;
 	size_t	i;
@@ -30,7 +30,7 @@ void	*ft_calloc(size_t size, size_t nb)
 	return (result);
 }
 
-void	ft_get_read_line(int fd, char *buf, char **s_line)
+static void	ft_get_read_line(int fd, char *buf, char **s_line)
 {
 	ssize_t	bytes_read;
 
@@ -54,17 +54,17 @@ void	ft_get_read_line(int fd, char *buf, char **s_line)
 		*s_line = ft_strjoin_and_free(*s_line, buf);
 }
 
-void	ft_get_line(int fd, char **s_line)
+static void	ft_get_line(int fd, char **s_line)
 {
 	char	*buf;
 
 	if (!*s_line)
 	{
-		*s_line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		*s_line = ft_calloc((size_t)BUFFER_SIZE + 1, sizeof(char));
 		if (!*s_line)
 			return ;
 	}
-	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	buf = ft_calloc((size_t)BUFFER_SIZE + 1, sizeof(char));
 	if (!buf)
 	{
 		free(*s_line);
@@ -75,7 +75,7 @@ void	ft_get_line(int fd, char **s_line)
 	free(buf);
 }
 
-char	*line_formatting(char **s_line, size_t i)
+static char	*line_formatting(char **s_line, size_t i)
 {
 	char	*result;
 	char	*tmp;
@@ -111,6 +111,8 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	ft_get_line(fd, &s_line);
+
+	/*--la--*/
 	if (!s_line)
 		return (NULL);
 	i = 0;

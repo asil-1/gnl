@@ -6,7 +6,7 @@
 /*   By: ldepenne <ldepenne@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 17:38:04 by ldepenne          #+#    #+#             */
-/*   Updated: 2025/11/18 17:42:30 by ldepenne         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:26:53 by ldepenne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,13 @@
 # include <stdlib.h> //malloc
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 20
+#  define BUFFER_SIZE 15
 # endif
 
 char	*get_next_line(int fd);
-void	ft_get_line(int fd, char **s_line);
-void	ft_get_read_line(int fd, char *buf, char **s_line);
-void	*ft_calloc(size_t size, size_t repeat);
 char	*ft_strchr(char *s, int c);
-char	*ft_strjoin_and_free(char *s1, char *s2);
 char	*ft_strndup(char *s, size_t n);
+char	*ft_strjoin_and_free(char *s1, char *s2);
 char	*ft_substr(char *s, unsigned int start, size_t len);
 size_t	ft_strlen(char *s);
 
